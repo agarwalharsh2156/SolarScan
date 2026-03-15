@@ -1,0 +1,19 @@
+<nav
+    style="background: #1f2937; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div>
+        <a href="{% url 'map_interface' %}"
+            style="color: white; text-decoration: none; margin-right: 20px; font-weight: bold; font-size: 1.1rem;">SolarScan</a>
+    </div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <a href="{% url 'profile' %}" style="color: #d1d5db; text-decoration: none;">My Profile</a>
+        <a href="{% url 'map_interface'%}" style="color:#d1d5db; text-decoration: none;">Analyse</a>
+        <a href="{% url 'history_list'%}" style="color:#d1d5db; text-decoration: none;">History</a>
+        <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit"
+                style="background: #ef4444; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 500; transition: background 0.2s;">
+                Logout
+            </button>
+        </form>
+    </div>
+</nav>

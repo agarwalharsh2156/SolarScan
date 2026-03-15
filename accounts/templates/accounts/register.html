@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title%}Sign In - Solar Detection{% endblock %}
+
+{% block content %}
+    <div class="split-layout">
+        <div class="form-section">
+            <div class="form-wrapper">
+                <h1>Create an account</h1>
+                <p class="subtitle">Start your solar detection journey.</p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn-submit">Sign Up</button>
+                </form>
+
+                <p class="switch-text">
+                    Already have an account? <a href="{% url 'login' %}">Sign in</a>
+                </p>
+            </div>
+        </div>
+        <div class="image-section"></div>
+    </div>
+{% endblock %}

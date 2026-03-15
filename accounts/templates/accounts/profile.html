@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container"
+    style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+    <h2 style="margin-bottom: 1.5rem; color: #111827;">Account Details</h2>
+
+    <div style="margin-bottom: 1rem;">
+        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Full Name</p>
+        <p style="font-weight: 500; color: #111827;">{{ user.first_name }} {{ user.last_name }}</p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Email Address</p>
+        <p style="font-weight: 500; color: #111827;">{{ user.email }}</p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Company Name</p>
+        <p style="font-weight: 500; color: #111827;">{{ user.company_name|default:"Not specified" }}</p>
+    </div>
+
+    <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #e5e7eb;">
+
+    <div style="margin-bottom: 1rem;">
+        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Member Since</p>
+        <p style="font-weight: 500; color: #111827;">{{ user.date_joined|date:"F j, Y" }}</p>
+    </div>
+</div>
+{% endblock %}

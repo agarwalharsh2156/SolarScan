@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Scan History - Solar Detection{% endblock %}
+
+{% block content %}
+<style>
+    .history-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .history-table th {
+        background-color: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .history-table tr:hover {
+        background-color: #f3f4f6;
+    }
+
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-green {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .pagination {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        align-items: center;
+    }
+</style>
+
+<div class="history-container">
+    <h1 style="color: #111827; margin-bottom: 0.5rem;">Scan History</h1>
+    <p style="color: #6b7280; margin-bottom: 2rem;">Review your previous satellite analysis records.</p>
+
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Empty Roofs</th>
+                <th>Solar Panels</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scan in scans %}
+            <tr>
+                <td>{{ scan.created_at|date:"M d, Y H:i" }}</td>
+                <td>
+                    {% if scan.address %}<strong>{{ scan.address }}</strong><br>{% endif %}
+                    <small style="color: #6b7280;">{{ scan.lat }}, {{ scan.long }}</small>
+                </td>
+                <td><span class="badge badge-blue">{{ scan.targets }}</span></td>
+                <td><span class="badge badge-green">{{ scan.solarPans }}</span></td>
+                <td>
+                    {% if scan.satellite_img %}
+                    <a href="{{ scan.satellite_img.url }}" target="_blank"
+                        style="color: #2563eb; text-decoration: none; font-weight: 600;">View Scan</a>
+                    {% else %}
+                    <span style="color: #9ca3af;">N/A</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 3rem; color: #6b7280;">No scans found. Start by
+                    analyzing a map location.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn-submit"
+            style="width: auto; padding: 0.5rem 1rem; text-decoration: none;">Previous</a>
+        {% endif %}
+
+        <span style="color: #374151; font-weight: 500;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn-submit"
+            style="width: auto; padding: 0.5rem 1rem; text-decoration: none;">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
