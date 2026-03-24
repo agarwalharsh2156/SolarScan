@@ -4,111 +4,65 @@
 {% block content %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<style>
-    #map { height: 450px; width: 100%; border-radius: 8px; margin-bottom: 20px; z-index: 1; }
-    .results-panel { display: none; padding: 20px; background: #f9fafb; border-radius: 8px; color: #111827; }
-</style>
-
-<div class="split-layout">
-    <div class="form-section">
-        <div class="form-wrapper">
-            <h1>Select Roof Area</h1>
-            
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="address-search" placeholder="Enter address..." style="flex: 1;">
-                <button onclick="searchAddress()" class="btn-submit" style="margin-top: 0; width: auto; padding: 0 20px;">Search</button>
-            </div>
-
-            <div id="map"></div>
-
-            <button id="analyze-btn" class="btn-submit" disabled>Analyze Selected Location</button>
-            {% csrf_token %}
-        </div>
+<div class="container-wrapper">
+    <!-- Header -->
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.5rem; color: #111827; margin: 0 0 0.5rem 0; font-weight: 800;">Solar Detection Analysis
+        </h1>
+        <p style="color: #6b7280; font-size: 1rem; margin: 0;">Search for an address or click on the map to analyze
+            satellite imagery</p>
     </div>
-    
-    <div class="image-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background-color: #e5e7eb;">
-        <div id="results" class="results-panel">
-            <h2 style="margin-bottom: 15px;">Analysis Complete</h2>
-            <p style="margin-bottom: 10px;"><strong>Empty Roofs (Targets):</strong> <span id="roof-count">0</span></p>
-            <p style="margin-bottom: 15px;"><strong>Solar Panels:</strong> <span id="panel-count">0</span></p>
-            <img id="satellite-img" src="" style="width: 100%; max-width: 400px; border-radius: 8px; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <input type="text" id="address-search" placeholder="Enter address (e.g., New York, USA)...">
+        <button onclick="searchAddress()" class="btn-submit">Search</button>
+    </div>
+
+    <!-- Map -->
+    <div class="map-container" id="map"></div>
+
+    <!-- Analysis Section -->
+    <div class="analysis-section">
+        <!-- Image with Bounding Boxes -->
+        <div class="image-box">
+            <div class="controls-section">
+                <button class="toggle-btn" id="toggle-boxes" onclick="toggleBoundingBoxes()">
+                    <i class="bi bi-eye"></i>
+                    <span>Show Detections</span>
+                </button>
+            </div>
+            <div id="satellite-img-container">
+                <img id="satellite-img" src="" alt="Satellite Image">
+                <canvas id="bounding-box-canvas"></canvas>
+            </div>
+            <div class="no-results" id="no-analysis-msg" style="display: none;">
+                <i class="bi bi-info-circle"
+                    style="font-size: 2rem; color: #d1d5db; display: block; margin-bottom: 1rem;"></i>
+                <p>Click on the map or search an address to analyze</p>
+            </div>
+        </div>
+
+        <!-- Results Cards -->
+        <div class="image-box">
+            <div class="controls-section" style="border-bottom: none;">
+                <h3 style="margin: 0; color: #111827; font-weight: 700;">Analysis Results</h3>
+            </div>
+            <div id="results-content">
+                <div class="no-results">
+                    <i class="bi bi-graph-up" style="font-size: 2rem; color: #d1d5db; display: block; margin-bottom: 1rem;"></i>
+                    <p>Results will appear here</p>
+                </div>
+            </div>
+            <button id="analyze-btn" class="btn-submit" style="margin: 1.5rem; width: calc(100% - 3rem); display: none;"
+                disabled>
+                Analyze Selected Location
+            </button>
         </div>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    // Initialize map centered on Vadodara by default for local testing
-    const map = L.map('map').setView([22.3072, 73.1812], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-    
-    let currentMarker = null;
-    let payload = { lat: null, lng: null, zoom_level: 19, depth: 2, address: "" };
-
-    // Free Nominatim Geocoding
-    async function searchAddress() {
-        const query = document.getElementById('address-search').value;
-        if (!query) return;
-        
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        
-        if (data.length > 0) {
-            map.setView([data[0].lat, data[0].lon], 18);
-            payload.address = query;
-        } else {
-            alert("Address not found.");
-        }
-    }
-
-    // Capture Coordinates on Click
-    map.on('click', function(e) {
-        payload.lat = e.latlng.lat;
-        payload.lng = e.latlng.lng;
-        
-        if (currentMarker) map.removeLayer(currentMarker);
-        currentMarker = L.marker([payload.lat, payload.lng]).addTo(map);
-        
-        document.getElementById('analyze-btn').disabled = false;
-    });
-
-    // Submit to Django Backend
-    document.getElementById('analyze-btn').addEventListener('click', async () => {
-        const btn = document.getElementById('analyze-btn');
-        btn.innerText = "Analyzing Imagery...";
-        btn.disabled = true;
-
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        try {
-            const response = await fetch('{% url "analyze_map" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            
-            if (response.ok) {
-                document.getElementById('results').style.display = 'block';
-                document.getElementById('roof-count').innerText = result.targets;
-                document.getElementById('panel-count').innerText = result.solarPans;
-                
-                const img = document.getElementById('satellite-img');
-                img.src = result.image_url;
-                img.style.display = 'block';
-            } else {
-                alert("Server Error: " + (result.error || "Unknown error"));
-            }
-        } catch (error) {
-            alert("Network error occurred.");
-        }
-        
-        btn.innerText = "Analyze Selected Location";
-        btn.disabled = false;
-    });
-</script>
+<script src="{% static 'map.js' %}"></script>
+{% csrf_token %}
 {% endblock %}

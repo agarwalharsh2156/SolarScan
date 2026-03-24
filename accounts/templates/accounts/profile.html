@@ -1,32 +1,102 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load static %}
 
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="profile-container"
-    style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-    <h2 style="margin-bottom: 1.5rem; color: #111827;">Account Details</h2>
-
-    <div style="margin-bottom: 1rem;">
-        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Full Name</p>
-        <p style="font-weight: 500; color: #111827;">{{ user.first_name }} {{ user.last_name }}</p>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Email Address</p>
-        <p style="font-weight: 500; color: #111827;">{{ user.email }}</p>
-    </div>
-
-    <div style="margin-bottom: 1rem;">
-        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Company Name</p>
-        <p style="font-weight: 500; color: #111827;">{{ user.company_name|default:"Not specified" }}</p>
-    </div>
-
-    <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #e5e7eb;">
-
-    <div style="margin-bottom: 1rem;">
-        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Member Since</p>
-        <p style="font-weight: 500; color: #111827;">{{ user.date_joined|date:"F j, Y" }}</p>
+<div
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 300px; padding: 3rem 1rem; margin-bottom: 2rem;">
+    <div style="max-width: 700px; margin: 0 auto;">
+        <div style="text-align: center; color: white;">
+            <h1 style="font-size: 2.5rem; margin: 0 0 0.5rem 0; font-weight: 700;">My Profile</h1>
+            <p style="font-size: 1rem; opacity: 0.9; margin: 0;">Manage your account information and preferences</p>
+        </div>
     </div>
 </div>
+
+<div style="max-width: 700px; margin: -5rem auto 2rem; padding: 0 1rem; position: relative; z-index: 10;">
+    <!-- Profile Card -->
+    <div style="background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden;">
+
+        <!-- Profile Header Info -->
+        <div style="text-align: center; padding: 2rem 2rem 1rem;">
+            <div style="margin-bottom: 1.5rem;">
+                {% if user.profile_photo %}
+                <img src="{{ user.profile_photo.url }}" alt="Profile Photo"
+                    style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 5px solid #f0f9ff; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                {% else %}
+                <img src="{% static 'profile_placeholder.png' %}" alt="Profile Photo"
+                    style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 5px solid #f0f9ff; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                {% endif %}
+            </div>
+            <h2 style="margin: 0 0 0.5rem 0; color: #111827; font-size: 1.75rem;">{{ user.first_name }} {{user.last_name }}</h2>
+            <p style="color: #667eea; font-weight: 500; margin: 0; font-size: 0.95rem;">{{ user.email }}</p>
+        </div>
+
+        <!-- Edit Button -->
+        <div style="text-align: center; padding: 1rem 2rem; border-top: 1px solid #f0f0f0;">
+            <a href="{% url 'profile_edit' %}"
+                style="display: inline-block; text-decoration: none; padding: 0.75rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                ✎ Edit Profile
+            </a>
+        </div>
+
+        <!-- Divider -->
+        <div style="height: 1px; background: linear-gradient(90deg, transparent, #e5e7eb, transparent);"></div>
+
+        <!-- Information Grid -->
+        <div style="padding: 2rem;">
+            <!-- First and Last Name Row -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <p
+                        style="color: #6b7280; font-size: 0.75rem; margin: 0 0 0.5rem 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                        First Name</p>
+                    <p style="font-weight: 600; color: #111827; font-size: 1.1rem; margin: 0;">{{user.first_name|default:"—" }}
+                    </p>
+                </div>
+                <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #764ba2;">
+                    <p
+                        style="color: #6b7280; font-size: 0.75rem; margin: 0 0 0.5rem 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Last Name</p>
+                    <p style="font-weight: 600; color: #111827; font-size: 1.1rem; margin: 0;">{{user.last_name|default:"—" }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Email Row -->
+            <div
+                style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea; margin-bottom: 2rem;">
+                <p
+                    style="color: #6b7280; font-size: 0.75rem; margin: 0 0 0.5rem 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📧 Email Address</p>
+                <p style="font-weight: 600; color: #111827; font-size: 1.1rem; margin: 0;">{{ user.email }}</p>
+            </div>
+
+            <!-- Company Row -->
+            <div
+                style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #764ba2; margin-bottom: 2rem;">
+                <p
+                    style="color: #6b7280; font-size: 0.75rem; margin: 0 0 0.5rem 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                    🏢 Company Name</p>
+                <p style="font-weight: 600; color: #111827; font-size: 1.1rem; margin: 0;">{{user.company_name|default:"Not specified" }}</p>
+            </div>
+
+            <!-- Account Stats Row -->
+            <div
+                style="padding: 1.5rem; background: linear-gradient(135deg, #f0f9ff 0%, #f5f3ff 100%); border-radius: 8px; border-left: 4px solid #667eea;">
+                <p
+                    style="color: #6b7280; font-size: 0.75rem; margin: 0 0 0.5rem 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📅 Member Since</p>
+                <p style="font-weight: 600; color: #111827; font-size: 1.1rem; margin: 0;">{{ user.date_joined|date:"F j, Y" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    a[href*='profile_edit']:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+    }
+</style>
 {% endblock %}

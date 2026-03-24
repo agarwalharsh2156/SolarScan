@@ -112,3 +112,4 @@ ehthumbs.db
 
 # Keep this repository-specific directory ignored
 /media/
+__pycache__

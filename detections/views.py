@@ -17,7 +17,7 @@ def map_interface(request):
 @login_required
 def process_map_click(request):
     if request.method == 'POST':
-        # try:
+        try:
             data = json.loads(request.body)
             lat = data.get('lat')
             lng = data.get('lng')
@@ -65,10 +65,11 @@ def process_map_click(request):
                 'status': 'success',
                 'targets': detection.targets,
                 'solarPans': detection.solarPans,
+                'bounding_boxes': detection.detection_array,
                 'image_url': detection.satellite_img.url
             })
             
-        # except Exception as e:
-        #     return JsonResponse({'error': str(e)}, status=500)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)

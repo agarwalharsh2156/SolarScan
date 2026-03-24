@@ -40,7 +40,15 @@ class AccountManager(BaseUserManager):
 
 class Accounts(AbstractBaseUser, PermissionsMixin):
     """Custom user model using email as the unique identifier."""
-
+    profile_photo = models.ImageField(
+        verbose_name="Profile Image",
+        upload_to="profiles/",
+        width_field="profile_photo_width",
+        height_field="profile_photo_height",
+        default="profiles/profile_placeholder.jpg",
+    )
+    profile_photo_width = models.PositiveIntegerField(null=True, blank=True)
+    profile_photo_height = models.PositiveIntegerField(null=True, blank=True)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)

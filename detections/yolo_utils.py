@@ -15,20 +15,37 @@ def run_yolo(image_path):
 
     for r in results:
         boxes = r.boxes
+        # Get image dimensions from the result
+        img_height, img_width = r.orig_shape
+        
         for box in boxes:
             cls_id = int(box.cls[0])
             conf = float(box.conf[0])
-            coords = box.xyxy[0].tolist() # [x1, y1, x2, y2]
+            coords = box.xyxy[0].tolist()  # [x1, y1, x2, y2] - absolute coordinates
+            
+            # Convert to normalized coordinates (0-1)
+            x1, y1, x2, y2 = coords
+            x = x1 / img_width
+            y = y1 / img_height
+            width = (x2 - x1) / img_width
+            height = (y2 - y1) / img_height
             
             if cls_id == 0:
                 empty_roof_count += 1
+                box_type = 'target'
             elif cls_id == 1:
                 solar_panel_count += 1
+                box_type = 'solar_panel'
+            else:
+                box_type = 'unknown'
                 
             detection_array.append({
-                "class": cls_id,
-                "confidence": conf,
-                "box": coords
+                "type": box_type,
+                "x": x,
+                "y": y,
+                "width": width,
+                "height": height,
+                "confidence": conf
             })
 
     return {

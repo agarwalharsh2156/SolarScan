@@ -1,18 +1,42 @@
 <nav
-    style="background: #1f2937; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <div>
+    style="background: linear-gradient(90deg, #1f2937 0%, #111827 100%); padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100;">
+    <div style="display: flex; align-items: center;">
         <a href="{% url 'map_interface' %}"
-            style="color: white; text-decoration: none; margin-right: 20px; font-weight: bold; font-size: 1.1rem;">SolarScan</a>
+            style="color: white; text-decoration: none; font-weight: bold; font-size: 1.3rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; transition: transform 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="bi bi-sun-fill" style="font-size: 1.5rem;"></i>
+            <span>SolarScan</span>
+        </a>
     </div>
-    <div style="display: flex; gap: 20px; align-items: center;">
-        <a href="{% url 'profile' %}" style="color: #d1d5db; text-decoration: none;">My Profile</a>
-        <a href="{% url 'map_interface'%}" style="color:#d1d5db; text-decoration: none;">Analyse</a>
-        <a href="{% url 'history_list'%}" style="color:#d1d5db; text-decoration: none;">History</a>
+    <div style="display: flex; gap: 2rem; align-items: center;">
+        <a href="{% url 'profile' %}"
+            style="color: #d1d5db; text-decoration: none; font-weight: 500; transition: all 0.3s ease; padding: 0.5rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem;"
+            onmouseover="this.style.color='#667eea'; this.style.backgroundColor='rgba(102, 126, 234, 0.1);'"
+            onmouseout="this.style.color='#d1d5db'; this.style.backgroundColor='transparent';">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+        </a>
+        <a href="{% url 'map_interface'%}"
+            style="color: #d1d5db; text-decoration: none; font-weight: 500; transition: all 0.3s ease; padding: 0.5rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem;"
+            onmouseover="this.style.color='#667eea'; this.style.backgroundColor='rgba(102, 126, 234, 0.1);'"
+            onmouseout="this.style.color='#d1d5db'; this.style.backgroundColor='transparent';">
+            <i class="bi bi-search"></i>
+            <span>Analyse</span>
+        </a>
+        <a href="{% url 'history_list'%}"
+            style="color: #d1d5db; text-decoration: none; font-weight: 500; transition: all 0.3s ease; padding: 0.5rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem;"
+            onmouseover="this.style.color='#667eea'; this.style.backgroundColor='rgba(102, 126, 234, 0.1);'"
+            onmouseout="this.style.color='#d1d5db'; this.style.backgroundColor='transparent';">
+            <i class="bi bi-clock-history"></i>
+            <span>History</span>
+        </a>
         <form method="post" action="{% url 'logout' %}" style="margin: 0;">
             {% csrf_token %}
             <button type="submit"
-                style="background: #ef4444; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 500; transition: background 0.2s;">
-                Logout
+                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; color: white; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3); display: flex; align-items: center; gap: 0.5rem;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.5)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(239, 68, 68, 0.3)';">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
             </button>
         </form>
     </div>
